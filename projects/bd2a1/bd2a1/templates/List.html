@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<head>
+    <title>SELECT</title>
+</head>
+<body>
+    <center>
+        <h1>MOSTRAR UTILIZADOR</h1>
+        <hr/>
+        <hr/>
+        <table border="2">
+            <tr>
+                <td><a href="{% url 'home' %}">HOME</a></td><td><a href="{% url 'set_uti' %}">Inserir Utilizador</a></td>
+            </tr> 
+        </table>
+        <hr/>
+        <hr/>
+        <table border="1">
+            <tr>
+               <th>ID</th> 
+               <th>Desig</th> 
+               <th>Pass</th> 
+            </tr>
+            {% for result in data%}
+            <tr>
+                <td>{{result.id}}</td>
+                <td>{{result.desig}}</td>
+                <td>{{result.passwd}}</td>
+            </tr> 
+            {% endfor %}
+        </table>
+    </center>
+</body>
+</html>
