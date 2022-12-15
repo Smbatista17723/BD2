@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<head>
+    <title>XptO - Its 4 All</title>
+    <h1 align="left">XPTO STORE</h1><h3 align="right"><a href="{% url 'carrinho' %}">MEU CARRINHO ( {{conta}} )</a></h3>
+</head>
+<body>
+        <hr color="black" />
+        <table style="width:100%">
+            <th style="text-align:left">
+                <h3><a href="{% url 'home' %}">HOME</a></h3>
+            </th>
+            <th style="text-align:left">
+                <h3><a href="{% url 'produtos' %}">TODOS OS PRODUTOS</a></h3>
+            </th>
+            <th style="text-align:right">
+                <h3>Bem vindo, <a href="{% url 'home' %}">{% for result in perf%} {{result.nome}} {{result.apelido}}</a></h3>
+            </th>
+        </table>
+        <hr color="black" />
+        <center>
+        <br>
+        <h2>Meu Perfil</h2>
+        <br>
+        <table border="1">
+            <tr>
+               <th>Nome</th> 
+               <td>{{result.nome}}</td>
+            </tr>
+            <tr>
+                <th>Apelido</th> 
+                <td>{{result.apelido}}</td>
+             </tr>
+             <tr>
+                <th>Email</th> 
+                <td>{{result.email}}</td>
+             </tr>
+             <tr>
+                <th>Data de Nasciemento</th> 
+                <td>{{result.data_nascimento}}</td>
+             </tr>
+             <tr>
+                <th>Morada</th> 
+                <td>{{result.morada}}</td>
+             </tr>
+            {% endfor %}
+        </table>
+        <br>
+        <input type="submit" value="Minhas Encomendas"/>
+        <br>
+        <br>
+        <input type="submit" value="Terminar Sessão"/>
+        <br>
+        </center>
+</body>
+</html>
