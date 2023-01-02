@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<head>
+    <title>XptO - Registo de Produtos</title>
+    <h1 align="left">XPTO STORE</h1><h3 align="right"><a href="{% url 'logout' %}">TERMINAR SESSÃO</a></h3>
+</head>
+<hr color="black" />
+<table style="width:100%">
+    <th style="text-align:left">
+        <h3><a href="{% url 'parceiro' %}">HOME</a></h3>
+    </th>
+    <th style="text-align:right">
+        <h3>Bem vindo, {{nom}}</a></h3>
+    </th>
+</table>
+        <hr color="black" />
+    <center>
+    <br>
+    <h3>Registo de Produto</h3>
+    <form action="" method="POST">
+        {% csrf_token %}
+        <table border="1">
+            {{form.as_table}}
+        </table>
+        <br>
+        <input type="submit" value="Registar"/>
+    </form>
+    </center>
+</body>
+</html>

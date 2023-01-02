@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<head>
+    <title>XptO - Its 4 All</title>
+    <h1 align="left">XPTO STORE</h1><h3 align="right"><a href="{% url 'logout' %}">TERMINAR SESSÃO</a></h3>
+    </th>
+</head>
+<body>
+        <hr color="black" />
+        <table style="width:100%">
+            <th style="text-align:left">
+                <h3><a href="{% url 'admin' %}">HOME</a></h3>
+            </th>
+            <th style="text-align:left">
+                <h3><a href="{% url 'todasenc' %}">TODAS AS ENCOMENDAS</a></h3>
+            </th>
+            <th style="text-align:right">
+                <h3>Bem vindo, Admin {{nom}}</h3>
+            </th>
+        </table>
+        <hr color="black" />
+        <center>
+        <br>
+        <h2>Lista de Encomendas</h2>
+        <br>
+        <table border="1">
+            <tr>
+               <th>ID Encomenda</th> 
+               <th>Utilizador</th> 
+               <th>Data</th> 
+               <th>Preço</th> 
+            </tr>
+            {% for result in data%}
+            <tr>
+                <td>{{result.0}}</td>
+                <td>{{result.2}}</td>
+                <td>{{result.1}}</td>
+                <td>{{result.3}}</td>
+                <td><input type="submit" value="Detalhes"/></td>
+            </tr> 
+            {% endfor %}
+        </table>
+        <br>
+        </center>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<head>
+    <title>XptO - Its 4 All</title>
+    <h1 align="left">XPTO STORE</h1><h3 align="right"><a href="{% url 'carrinho' %}">MEU CARRINHO ( {{conta}} )</a></h3>
+</head>
+<body>
+        <hr color="black" />
+        <table style="width:100%">
+            <th style="text-align:left">
+                <h3><a href="{% url 'home' %}">HOME</a></h3>
+            </th>
+            <th style="text-align:left">
+                <h3><a href="{% url 'produtos' %}">TODOS OS PRODUTOS</a></h3>
+            </th>
+            <th style="text-align:right">
+                <h3>Bem vindo, <a href="{% url 'perfil' %}">{{nom}}</a></h3>
+            </th>
+        </table>
+        <hr color="black" />
+        <center>
+        <br>
+        <h2>Destaques</h2>
+        <br>
+        <table border="1">
+            <tr>
+               <th>Nome</th> 
+               <th>Tipo</th> 
+               <th>Fornecedor</th> 
+               <th>Quantidade</th> 
+               <th>Preço</th>
+               <th>Desconto</th>
+               <th>Adicionar ao Carrinho</th>
+            </tr>
+            {% for result in data%}
+            <tr>
+                <td>{{result.nome}}</td>
+                <td>{{result.tipo}}</td>
+                <td>{{result.fornecedor}}</td>
+                <td>{{result.quantidade}}</td>
+                <td>{{result.preço}}</td>
+                <td>{{result.desconto}}</td>
+                <td><center><a href="Adiciona/{{result.nome}}/"><input type="submit" value=" + "/></a></center></td>
+            </tr> 
+            {% endfor %}
+        </table>
+        <br>
+        <br>
+        <h2>Últimas Unidades</h2>
+        <br>
+        <table border="1">
+            <tr>
+               <th>Nome</th> 
+               <th>Tipo</th> 
+               <th>Fornecedor</th> 
+               <th>Quantidade</th> 
+               <th>Preço</th>
+               <th>Desconto</th>
+               <th>Adicionar ao Carrinho</th>
+            </tr>
+            {% for result in d%}
+            <tr>
+                <td>{{result.nome}}</td>
+                <td>{{result.tipo}}</td>
+                <td>{{result.fornecedor}}</td>
+                <td>{{result.quantidade}}</td>
+                <td>{{result.preço}}</td>
+                <td>{{result.desconto}}</td>
+                <td><center><a href="Adiciona/{{result.nome}}/"><input type="submit" value=" + "/></a></center></td>
+            </tr> 
+            {% endfor %}
+        </table>
+        </center>
+</body>
+</html>
