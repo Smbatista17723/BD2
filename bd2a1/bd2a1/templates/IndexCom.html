@@ -10,7 +10,13 @@
                 <h3><a href="{% url 'comercial' %}">HOME</a></h3>
             </th>
             <th style="text-align:left">
-                <h3><a href="{% url 'prodcomercial' %}">TODOS OS PRODUTOS</a></h3>
+                <h3><a href="{% url 'prodcomercial' %}">GESTÃO DE PRODUTOS</a></h3>
+            </th>
+            <th style="text-align:left">
+                <h3><a href="{% url 'waitlist' %}">GESTÃO DE ENCOMENDAS</a></h3>
+            </th>
+            <th style="text-align:left">
+                <h3><a href="{% url 'vendas' %}">GESTÃO DE VENDAS</a></h3>
             </th>
             <th style="text-align:right">
                 <h3>Bem vindo, {{nom}}</a></h3>
@@ -19,38 +25,13 @@
         <hr color="black" />
         <center>
         <br>
-        <h2>Destaques</h2>
+        <h2>Stock a esgotar</h2>
         <br>
         <table border="1">
             <tr>
                <th>Nome</th> 
                <th>Tipo</th> 
-               <th>Fornecedor</th> 
-               <th>Quantidade</th> 
-               <th>Preço</th>
-               <th>Desconto</th>
-            </tr>
-            {% for result in data%}
-            <tr>
-                <td>{{result.nome}}</td>
-                <td>{{result.tipo}}</td>
-                <td>{{result.fornecedor}}</td>
-                <td>{{result.quantidade}}</td>
-                <td>{{result.preço}}</td>
-                <td>{{result.desconto}}</td>
-                <td><input type="submit" value="Editar"/><input type="submit" value="+ Stock"/></td>
-            </tr> 
-            {% endfor %}
-        </table>
-        <br>
-        <br>
-        <h2>Últimas Unidades</h2>
-        <br>
-        <table border="1">
-            <tr>
-               <th>Nome</th> 
-               <th>Tipo</th> 
-               <th>Fornecedor</th> 
+               <th>Loja</th> 
                <th>Quantidade</th> 
                <th>Preço</th>
                <th>Desconto</th>
@@ -63,7 +44,7 @@
                 <td>{{result.quantidade}}</td>
                 <td>{{result.preço}}</td>
                 <td>{{result.desconto}}</td>
-                <td><input type="submit" value="Editar"/><input type="submit" value="+ Stock"/></td>
+                <td><input type="submit" value="Editar"/><a href="{{result.nome}}/"><input type="submit" value="+ Stock"/></a></td>
             </tr> 
             {% endfor %}
         </table>

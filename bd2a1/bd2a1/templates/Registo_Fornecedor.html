@@ -11,7 +11,7 @@
                 <h3><a href="{% url 'admin' %}">HOME</a></h3>
             </th>
             <th style="text-align:left">
-                <h3><a href="{% url 'todasenc' %}">TODAS AS ENCOMENDAS</a></h3>
+                <h3><a href="{% url 'colaboradores' %}">TODAS OS COLABORADORES</a></h3>
             </th>
             <th style="text-align:right">
                 <h3>Bem vindo, Admin {{nom}}</h3>
@@ -19,27 +19,16 @@
         </table>
         <hr color="black" />
         <center>
-        <br>
-        <h2>Lista de Encomendas em Espera</h2>
-        <br>
+    <br>
+    <h3>Registo de Fornecedor</h3>
+    <form action="" method="POST">
+        {% csrf_token %}
         <table border="1">
-            <tr>
-               <th>ID Encomenda</th> 
-               <th>Utilizador</th> 
-               <th>Data</th> 
-               <th>Preço</th> 
-            </tr>
-            {% for result in data%}
-            <tr>
-                <td>{{result.0}}</td>
-                <td>{{result.2}}</td>
-                <td>{{result.1}}</td>
-                <td>{{result.3}}</td>
-                <td><input type="submit" value="Detalhes"/></td>
-            </tr> 
-            {% endfor %}
+            {{form.as_table}}
         </table>
         <br>
-        </center>
+        <input type="submit" value="Registar"/>
+    </form>
+    </center>
 </body>
 </html>

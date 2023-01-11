@@ -25,34 +25,26 @@
         <hr color="black" />
         <center>
         <br>
-        <h2>Todos os Produtos</h2>
+        <h2>Encomendas por Validar</h2>
         <br>
         <table border="1">
             <tr>
-               <th>Nome</th> 
-               <th>Tipo</th> 
-               <th>Loja</th> 
-               <th>Quantidade</th> 
-               <th>Preço</th>
-               <th>Desconto</th>
+               <th>ID Encomenda</th> 
+               <th>Utilizador</th> 
+               <th>Data</th> 
+               <th>Preço</th> 
             </tr>
             {% for result in data%}
             <tr>
-                <td>{{result.nome}}</td>
-                <td>{{result.tipo}}</td>
-                <td>{{result.fornecedor}}</td>
-                <td>{{result.quantidade}}</td>
-                <td>{{result.preço}}</td>
-                <td>{{result.desconto}}</td>
-                <td><input type="submit" value="Editar"/><input type="submit" value="+ Stock"/></td>
+                <td>{{result.0}}</td>
+                <td>{{result.2}}</td>
+                <td>{{result.1}}</td>
+                <td>{{result.3}}</td>
+                <td><a href="Valid/{{result.0}}"><input type="submit" value="Validar"/></a></td>
+                <td><a href="Cancel/{{result.0}}"><input type="submit" value="Cancelar"/></a></td>
             </tr> 
             {% endfor %}
         </table>
-        <br>
-        <a href="{% url 'regist_prod' %}">
-            <input type="submit" value="Registar Produto" />
-        </a>
-        <br>
         </center>
 </body>
 </html>

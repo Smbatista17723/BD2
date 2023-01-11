@@ -11,7 +11,7 @@
                 <h3><a href="{% url 'admin' %}">HOME</a></h3>
             </th>
             <th style="text-align:left">
-                <h3><a href="{% url 'todasenc' %}">TODAS AS ENCOMENDAS</a></h3>
+                <h3><a href="{% url 'colaboradores' %}">TODAS OS COLABORADORES</a></h3>
             </th>
             <th style="text-align:right">
                 <h3>Bem vindo, Admin {{nom}}</h3>
@@ -39,8 +39,8 @@
                 <td>{{result.morada}}</td>
                 <td>{{result.email}}</td>
                 <td>{{result.tipo}}</td>
-                <td><input type="submit" value="Validar"/></td>
-                <td><input type="submit" value=" X "/></td>
+                <td><a href="Valid/{{result.email}}"><input type="submit" value="Validar"/></a></td>
+                <td><a href="Del/{{result.email}}"><input type="submit" value=" X "/></a></td>
             </tr> 
             {% endfor %}
         </table>

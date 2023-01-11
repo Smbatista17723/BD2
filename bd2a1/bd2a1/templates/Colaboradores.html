@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<head>
+    <title>XptO - Its 4 All</title>
+    <h1 align="left">XPTO STORE</h1><h3 align="right"><a href="{% url 'logout' %}">TERMINAR SESSÃO</a></h3>
+    </th>
+</head>
+<body>
+        <hr color="black" />
+        <table style="width:100%">
+            <th style="text-align:left">
+                <h3><a href="{% url 'admin' %}">HOME</a></h3>
+            </th>
+            <th style="text-align:left">
+                <h3><a href="{% url 'colaboradores' %}">TODAS OS COLABORADORES</a></h3>
+            </th>
+            <th style="text-align:right">
+                <h3>Bem vindo, Admin {{nom}}</h3>
+            </th>
+        </table>
+        <hr color="black" />
+        <center>
+        <br>
+        <h2>Colaboradores XptO</h2>
+        <br>
+        <table border="1">
+            <tr>
+               <th>Nome</th> 
+               <th>Apelido</th> 
+               <th>Data de Nascimento</th> 
+               <th>Morada</th> 
+               <th>Email</th>
+               <th>Tipo</th>
+            </tr>
+            {% for result in data%}
+            <tr>
+                <td>{{result.nome}}</td>
+                <td>{{result.apelido}}</td>
+                <td>{{result.data_nascimento}}</td>
+                <td>{{result.morada}}</td>
+                <td>{{result.email}}</td>
+                <td>{{result.tipo}}</td>
+                <td><a href="Colaborador/{{result.email}}"><input type="submit" value="Remover"/></a></td>
+            </tr> 
+            {% endfor %}
+        </table>
+        <br>
+        <h2>Parceiros XptO</h2>
+        <br>
+        <table border="1">
+            <tr>
+               <th>Nome</th>  
+               <th>Morada</th> 
+               <th>Email</th>
+            </tr>
+            {% for result2 in data2%}
+            <tr>
+                <td>{{result2.nome}} {{result2.apelido}}</td>
+                <td>{{result2.morada}}</td>
+                <td>{{result2.email}}</td>
+                <td><a href="Colaborador/{{result2.email}}"><input type="submit" value="Remover"/></a></td>
+            </tr> 
+            {% endfor %}
+        </table>
+        <br>
+        <h2>Fornecedores XptO</h2>
+        <br>
+        <table border="1">
+            <tr>
+               <th>Nome</th> 
+               <th>Morada</th> 
+               <th>Contacto</th>
+               <th>Email</th>
+            </tr>
+            {% for result3 in data3%}
+            <tr>
+                <td>{{result3.0}}</td>
+                <td>{{result3.1}}</td>
+                <td>{{result3.2}}</td>
+                <td>{{result3.3}}</td>
+                <td><a href="Fornecedor/{{result3.3}}/"><input type="submit" value="Remover"/></a></td>
+            </tr> 
+            {% endfor %}
+        </table>
+        <br>
+        <a href="{% url 'fornecedores' %}">
+            <input type="submit" value="Registar Fornecedor" />
+        </a>
+        </center>
+</body>
+</html>

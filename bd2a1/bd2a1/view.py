@@ -4,7 +4,7 @@ from django.db import connection
 from django.db import models
 from bd2a1.models import Enc
 from django.shortcuts import redirect
-from .forms import FormUti, Login, Registo, RegistoProd, RegistoProdPar
+from .forms import FormUti, Login, Registo, RegistoProd, RegistoProdPar, Fornecedor
 # Create your views here.
 
 conexaomongo = pymongo.MongoClient("mongodb://localhost:27017/")["proj"]
@@ -47,6 +47,14 @@ def checkemail2(email):
     x = col.count_documents({"email": email})
     return x
 
+def checkemail3(email):
+    cursor = connection.cursor()
+    cursor.execute("Select * from check_email('"+ email +"');")
+    x = cursor.fetchall()
+    cursor.close()
+    for xx in x:
+        y = xx[0]
+    return y
 
 def insere_produto(nome, tipo, quant, preco, forn, desconto):
         bd = conexaomongo
@@ -241,17 +249,85 @@ def show_destaques(request):
         return render(request, 'Index2.html', {'data': x, 'd': y, 'nom': nome, 'conta': z})
     return render(request, 'Index.html', {'data': x, 'd': y, 'conta': z})
 
+def valida(request, e_id):
+    val = session()
+    if (val > 0):
+        nome = session_name
+    cursor = connection.cursor()
+    cursor.execute("Select * from validar(%s);", (e_id,))
+    cursor.close()
+    return render(request, 'Enc_Valid.html', {'nom': nome})
+
+def admin_val(request, user):
+    val = session()
+    if (val > 0):
+        nome = session_name
+    bd = conexaomongo
+    col = bd["waitlist"]
+    col2 = bd["utilizadores"]
+    utilizador = col.find({"email": user}, {"_id": (0)})
+    for x in utilizador:
+        doc = {"nome": x["nome"],"apelido": x["apelido"], "data_nascimento": x["data_nascimento"], "morada": x["morada"], "email": x["email"], "password": x["password"], "tipo": x["tipo"]}
+        col2.insert_one(doc)
+        col.delete_many({"email": user})
+    return render(request, 'Admin_Val.html', {'nom': nome})
+
+def admin_del(request, user):
+    val = session()
+    if (val > 0):
+        nome = session_name
+    bd = conexaomongo
+    col = bd["waitlist"]
+    col.delete_many({"email": user})
+    return render(request, 'Admin_Del.html', {'nom': nome})
+
+def cancela(request, e_id):
+    val = session()
+    if (val > 0):
+        nome = session_name
+    cursor = connection.cursor()
+    cursor.execute("Select * from cancelar(%s);", (e_id,))
+    cursor.close()
+    return render(request, 'Enc_Cancel.html', {'nom': nome})
+
+def vendas(request):
+    val = session()
+    if (val > 0):
+        nome = session_name
+    cursor = connection.cursor()
+    cursor.execute("Select * from mais_vendidos")
+    vend = cursor.fetchall()
+    cursor.execute("Select * from top_buy")
+    top = cursor.fetchall()
+    cursor.execute("Select * from view_encomendas")
+    result = cursor.fetchall()
+    cursor.execute("Select * from vendidos")
+    vend2 = cursor.fetchall()
+    cursor.close()
+    return render(request, 'Vendas.html', {'nom': nome, 'vend': vend, 'top': top, 'result': result, 'vend2': vend2})
+
 def todas_enc(request):
     val = session()
     if (val > 0):
         nome = session_name
     cursor = connection.cursor()
-    cursor.execute("Select * from enc_ad();")
+    cursor.execute("Select * view_encomendas();")
     data = cursor.fetchall()
     cursor.close()
     return render(request, 'Encomendas.html', {'data': data,'nom': nome})
 
+def waitlist(request):
+    val = session()
+    if (val > 0):
+        nome = session_name
+    cursor = connection.cursor()
+    cursor.execute("select * from waitlist();")
+    data = cursor.fetchall()
+    cursor.close()
+    return render(request, 'Waitlist.html', {'data': data,'nom': nome})
+
 def minhas_enc(request):
+    bd = conexaomongo
     val = session()
     if (val > 0):
         nome = session_name
@@ -260,7 +336,14 @@ def minhas_enc(request):
     cursor.execute("select * from minhas_enc('"+ email +"');")
     data = cursor.fetchall()
     cursor.close()
-    return render(request, 'MinhasEnc.html', {'data': data,'nom': nome})
+    col = bd["carrinho"]
+    zz = col.aggregate([{"$group": {"_id": 'null', "total": {"$sum": "$quantidade"}}}])
+    if col.count_documents({}) == 0:
+        z = int(0)
+    else:
+        for zzz in zz:
+            z = int(zzz["total"])
+    return render(request, 'MinhasEnc.html', {'data': data,'nom': nome, 'conta': z})
 
 def limpa(request):
     bd = conexaomongo
@@ -274,8 +357,6 @@ def limpa(request):
 
 def finaliza(request):
     teste = session_mail()
-    if teste is None:
-        teste = 'guest'
     bd = conexaomongo
     col = bd["carrinho"]
     x = col.find({},{"_id":(0)})
@@ -283,11 +364,11 @@ def finaliza(request):
     y = col.aggregate([{"$group": {"_id": 'null', "total": {"$sum": {"$round": [{"$multiply": [{"$toDouble": "$preço"}, "$quantidade", {"$subtract": [1, "$desconto"]}]}, 2]}}}}])
     for tot in y:
         preco = tot["total"]
-        cursor.execute("CALL insere_enc(%s,%s);", (str(teste), float(str(preco))))
+        cursor.execute("CALL insere_enc2(%s,%s);", (str(teste), float(str(preco))))
     connection.commit()
     cursor.close()
     cursor2 = connection.cursor()
-    cursor2.execute("select max(e_id) as id from encomendas where e_user like '"+ teste +"';")
+    cursor2.execute("select * from last_enc('"+ teste +"');")
     c = cursor2.fetchone()
     cursor2.close()
     cursor3 = connection.cursor()
@@ -297,7 +378,7 @@ def finaliza(request):
         qua = int(result["quantidade"])
         preç = float(result["preço"])
         desc = float(str(result["desconto"]))
-        cursor3.execute("CALL Insere_Prod(%s,%s,%s,%s,%s);", (nom, qua, preç, c, desc))
+        cursor3.execute("CALL Insere_prod2(%s,%s,%s,%s,%s);", (nom, qua, preç, c, desc))
         xx = col2.find({"nome": nom}, {})
         for result2 in xx:
             col2.update_one({"nome": nom}, {"$set": {"quantidade": int(result2["quantidade"] - qua)}})
@@ -331,6 +412,27 @@ def show_carrinho(request):
         nome = session_name()
         return render(request, 'Carrinho2.html', {'data': x, 'total': y, 'conta': z, 'nom': nome})
     return render(request, 'Carrinho.html', {'data': x, 'total': y, 'conta': z})
+
+def registforn(request):
+    nom = 'Teste'
+    if request.method == 'POST':
+        form = Fornecedor(request.POST)
+        if form.is_valid():
+            nome = form.cleaned_data["nome"]
+            morada = form.cleaned_data["morada"]
+            contacto = form.cleaned_data["contacto"]
+            email = form.cleaned_data["email"]
+            if checkemail3(email) > 0:
+                form = Fornecedor(request.POST)
+                return render(request, 'Registo_Fornecedor.html', {'form': form, 'nom': nom})
+            else:
+                cursor2 = connection.cursor()
+                cursor2.execute("call insere_forn(%s,%s,%s,%s);", (nome, morada, contacto, email))
+                cursor2.close()
+                return render(request, 'Registo_Fornecedor.html', {'form': form, 'nom': nom})
+    else:
+        form = Fornecedor(request.POST)
+        return render(request, 'Registo_Fornecedor.html', {'form': form, 'nom': nom})
 
 def registuti(request):
         bd = conexaomongo
@@ -380,7 +482,7 @@ def registprod(request):
                 tipop = form.cleaned_data["tipo"]
                 quanti = form.cleaned_data["quantidade"]
                 price = form.cleaned_data["preço"]
-                forn = form.cleaned_data["fornecedor"]
+                forn = form.cleaned_data["loja"]
                 desc = form.cleaned_data["desconto"]
                 insere_produto(nomep, tipop, quanti, price, forn, desc)
                 return render(request, 'Registo_Produtos.html', {'form': form, 'nom': nome})
@@ -402,10 +504,10 @@ def registprod2(request):
                 price = form.cleaned_data["preço"]
                 desc = form.cleaned_data["desconto"]
                 insere_produto(nomep, tipop, quanti, price, nome, desc)
-                return render(request, 'Registo_Produtos2.html', {'form': form, 'nom': nome})
+                return render(request, 'Registo_ProdutosPar.html', {'form': form, 'nom': nome})
         else:
             form = RegistoProdPar(request.POST)
-            return render(request, 'Registo_Produtos2.html', {'form': form, 'nom': nome}) 
+            return render(request, 'Registo_ProdutosPar.html', {'form': form, 'nom': nome}) 
 
 def logout(request):
     bd = conexaomongo
@@ -496,13 +598,12 @@ def index_com(request):
     col = bd["waitlist"]
     x = col.find({},{"_id":(0)})
     col = bd["produtos"]
-    z = col.find({"desconto": {"$gt": 0.00}},{"_id":(0)}).sort("desconto", 1).limit(5)
-    y = col.find({},{"_id":(0)}).sort("quantidade", 1).limit(5)
+    y = col.find({},{"_id":(0)}).sort("quantidade", 1).limit(10)
     val = session()
     if (val > 0):
         nome = session_name
-        return render(request, 'IndexCom.html', {'data': x, 'nom': nome, 'data': z, 'd': y})
-    return render(request, 'IndexAd.html', {'data': x, 'data': z, 'd': y})
+        return render(request, 'IndexCom.html', {'data': x, 'nom': nome, 'd': y})
+    return render(request, 'IndexAd.html', {'data': x, 'd': y})
 
 def logincom(request):
     # if this is a POST request we need to process the form data
@@ -569,6 +670,59 @@ def loginpar(request):
             context = {'form': form, 'conta': z}
             return render(request, pag, context)
 
-def cart(request):
-    #POR FAZER
-    return render(request, 'Carrinho.html')  
+def colaboradores(request):
+    bd = conexaomongo
+    val = session()
+    if (val > 0):
+        nome = session_name()
+    col = bd["utilizadores"]
+    cmp = 'Comercial - Nível 1'
+    cmp2 = 'Comercial - Nível 2'
+    cmp3 = 'Parceiro'
+    x = col.find({"$or": [{"tipo": str(cmp)}, {"tipo": str(cmp2)}]},{"_id":(0), "password":(0)})
+    y = col.find({"tipo": str(cmp3)},{"_id":(0), "password":(0), "tipo":(0), "data_nascimento":(0)})
+    cursor2 = connection.cursor()
+    cursor2.execute("Select * from forn;")
+    z = cursor2.fetchall()
+    cursor2.close()
+    return render(request, "Colaboradores.html", {'data': x, 'data2': y, 'data3': z, 'nom': nome})
+
+def del_forn(request, forn):
+    val = session()
+    if (val > 0):
+        nome = session_name()
+    cursor2 = connection.cursor()
+    cursor2.execute("call del_forn('"+ forn +"');")
+    cursor2.close()
+    return render(request, "Col_Del.html", {'nom': nome})
+
+def del_col(request, forn):
+    bd = conexaomongo
+    val = session()
+    if (val > 0):
+        nome = session_name()
+    col = bd["utilizadores"]
+    col.delete_many({"email": forn})
+    return render(request, "Col_Del.html", {'nom': nome})
+
+def escolhe_forn(request, prod):
+    val = session()
+    if (val > 0):
+        nome = session_name()
+    cursor2 = connection.cursor()
+    cursor2.execute("Select * from forn;")
+    z = cursor2.fetchall()
+    cursor2.close()
+    return render(request, "ListForn.html", {'data3': z, 'nom': nome})
+
+def pedir_stock(request, prod, forn):
+    bd = conexaomongo
+    val = session()
+    if (val > 0):
+        nome = session_name()
+    cursor2 = connection.cursor()
+    cursor2.execute("call insere_repo('"+ prod +"', '"+ forn +"');")
+    cursor2.close()
+    col = bd["produtos"]
+    col.update_one({"nome": prod}, {"$inc": {"quantidade": 20}})
+    return render(request, "Stock.html", {'nom': nome})

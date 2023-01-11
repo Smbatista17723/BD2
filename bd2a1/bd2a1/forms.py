@@ -45,7 +45,7 @@ class RegistoProd(forms.Form):
     tipo = forms.ChoiceField(choices=Tipos_Produto, required=False)
     quantidade = forms.IntegerField(required=False)
     preço = forms.FloatField(required=False)
-    fornecedor = forms.CharField(required=False)
+    loja = forms.CharField(required=False)
     desconto = forms.FloatField(required=False)
 
 class RegistoProdPar(forms.Form):
@@ -54,3 +54,9 @@ class RegistoProdPar(forms.Form):
     quantidade = forms.IntegerField(required=False)
     preço = forms.FloatField(required=False)
     desconto = forms.FloatField(required=False)
+
+class Fornecedor(forms.Form):
+    nome = forms.CharField(max_length=30, required=False)
+    morada = forms.CharField(max_length=30, required=False)
+    contacto = forms.IntegerField(required=False)
+    email = forms.EmailField(required=False)
